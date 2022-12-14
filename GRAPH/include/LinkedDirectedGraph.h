@@ -9,7 +9,7 @@
 #include "Degrees.h"
 #include "IView.h"
 
-//Матрица смежности (связный)
+//Матрица смежности (связный) ориентированный
 struct LinkDirGraph : public IView2
 {
     LinkDirGraph(const int& n, int k,const std::function<unsigned int()>& rand = [](){return std::rand();});

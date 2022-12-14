@@ -8,10 +8,14 @@
 #include <functional>
 #include <queue>
 #include <stack>
+#include <limits>
 #include "View2.h"
 #include "View2-Linked.h"
 #include "LinkedDirectedGraph.h"
 #include "View4.h"
+
+using Matrix = std::vector<std::vector<int>>;
+
 
 void DFS(IView2& w,int curVertex, std::vector<bool>& vertexs,const std::function<void(const std::string&)>& func)
 {
@@ -19,10 +23,7 @@ void DFS(IView2& w,int curVertex, std::vector<bool>& vertexs,const std::function
     func(std::to_string(curVertex));
     for(int i = 0; i < w.size(); i++)
         if(not vertexs[i] && (w[curVertex][i] == 1))
-        {
             DFS(w,i,vertexs, func);
-
-        }
 }
 
 std::vector<bool> DFS(IView2& w,int start,std::function<void(const std::string&)> func)
@@ -245,7 +246,6 @@ std::list<std::set<int>> kerbosh(IView2& matrix)
     {
         if (not K.empty())
         {
-
             v=*K.begin();
             ///Сохраняем состояния множеств в стек
             StackOfSets.push(M), StackOfSets.push(K), StackOfSets.push(P);
@@ -335,6 +335,118 @@ void Invert(View2_Linked& view)
     for(int i = 0; i < view.size(); i++)
         for(int j = 0; j < view.size(); j++)
             view[i][j] = (view[i][j] == 0 && i != j)? 1: 0;
+}
+
+std::tuple<std::vector<int>, std::vector<int>> BellmanFord(IView2& mtx, int src)
+{
+    const int inf = std::numeric_limits<int>::max();
+    /// Заполнение массива индексов
+    std::vector<int> next(mtx.size(), inf);
+
+    /// Заполнение расстояний
+    std::vector<int> dist(mtx.size(), inf);
+    dist[src] = 0;
+    /// Алгоритм поиска пути
+    for (int k = 0; k < mtx.size(); ++k)
+        for (int i = 0; i < mtx.size(); ++i)
+            for (int j = 0; j < mtx.size(); ++j)
+            {
+                long long w = mtx[i][j];
+                if(w != 0)
+                    if (dist[i] != inf and dist[i] + w < dist[j]) {
+                        dist[j] = dist[i] + w;
+                        next[j] = i;
+                    }
+            }
+    return std::make_tuple(dist,next);
+}
+
+std::vector<int> RestoreBellmanFord(std::vector<int> mtx, int from, int to)
+{
+    const int inf = std::numeric_limits<int>::max();
+    auto path = std::vector<int> {};
+    for (auto current = to; current != from && current != inf; current = mtx[current])
+        path.push_back(current);
+    path.push_back(from);
+    std::reverse(path.begin(), path.end());
+    return path;
+}
+
+std::tuple<Matrix, Matrix> Floyd(IView2& mtx)
+{
+    const int inf = std::numeric_limits<int>::max();
+    /// Заполнение массива индексов
+    Matrix next(mtx.size(), std::vector<int>(mtx.size()));
+    for (auto i = 0; i < mtx.size(); ++i)
+        for (auto j = 0; j < mtx.size(); ++j)
+            next[i][j] = j;
+    /// Заполнение расстояний
+    Matrix dist = mtx;
+    for (int i = 0; i < mtx.size(); ++i)
+        for (int j = i + 1; j < mtx.size(); ++j)
+            if (dist[i][j] == 0)
+                dist[i][j] = dist[j][i] = inf;
+    /// Алгоритм поиска пути
+    for (int k = 0; k < mtx.size(); ++k)
+        for (int i = 0; i < mtx.size(); ++i)
+            for (int j = 0; j < mtx.size(); ++j)
+            {
+                long long sum = (long long) dist[i][k] + (long long)dist[k][j];
+                if (sum < (long long)dist[i][j]) {
+                    dist[i][j] = sum;
+                    next[i][j] = next[i][k];
+                }
+            }
+    return std::make_tuple(dist,next);
+}
+
+std::vector<int> RestoreFloyd(Matrix mtx, int from, int to)
+{
+    auto path = std::vector<int> {from};
+    while (from != to)
+    {
+        from = mtx[from][to];
+        path.push_back(from);
+    }
+    return path;
+}
+
+int FindNearest(std::vector<int> distance, std::vector<bool> visited)
+{
+    static int inf = std::numeric_limits<int>::max();
+    int minDistance = inf;
+    int minIndex = 0;
+
+    for (int i = 0; i < distance.size(); ++i)
+        if (!visited[i] && distance[i] <= minDistance)
+        {
+            minDistance = distance[i];
+            minIndex = i;
+        }
+    return minIndex;
+}
+
+std::tuple<std::vector<int>, std::vector<int>> Dikstra(IView2& mtx, int src)
+{
+    const int inf = std::numeric_limits<int>::max();
+    auto visited = std::vector<bool>(mtx.size());
+    auto distance = std::vector<int>(mtx.size(), inf);
+    auto buildingPaths = std::vector<int>(mtx.size(), inf);
+    distance[src] = 0;
+
+    for (int i = 0; i < mtx.size() - 1; ++i)
+    {
+        int current = FindNearest(distance, visited);
+        visited[current] = true;
+        for (int j = 0; j < mtx.size(); ++j)
+            if (!visited[j] && mtx[current][j] != 0 && distance[current] != inf && distance[current] + mtx[current][j] < distance[j])
+            {
+                distance[j] = distance[current] + mtx[current][j];
+                buildingPaths[j] = current;
+            }
+    }
+
+    return std::make_tuple(distance, buildingPaths);
 }
 
 #endif //GRAPH_ALGORITHMS_H

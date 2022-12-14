@@ -73,14 +73,31 @@ int main() {
 
     gen_Vn_Ek(n,k, [&generator](){return generator();});
 
-    auto matrix = new View2_Linked(n,k, generator);
+    View2_Linked matrix =  View2_Linked(8,16, generator);
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix.size(); ++j) {
+            matrix[i][j] = matrix[i][j] = 0;
+        }
+    }
+    matrix[1][0] = matrix[0][1] = 1;
+    matrix[4][0] = matrix[0][4] = 1;
+    matrix[2][0] = matrix[0][2] = 1;
+    matrix[2][3] = matrix[3][2] = 1;
+    matrix[6][3] = matrix[3][6] = 1;
+    matrix[1][3] = matrix[3][1] = 1;
+    matrix[2][5] = matrix[5][2] = 1;
+    matrix[4][5] = matrix[5][4] = 1;
+    matrix[6][5] = matrix[5][6] = 1;
+    matrix[6][7] = matrix[7][6] = 1;
+    matrix[7][4] = matrix[4][7] = 1;
+    matrix[7][1] = matrix[1][7] = 1;
     file.open(src_dir + "LinkDirGraph.csv");
-    tasks(file, *matrix);
+    tasks(file, matrix);
     file << std::endl;
     file << std::endl;
     file.close();
 
-    auto matrixInvert = new View2_Linked(*matrix);
+    auto matrixInvert = new View2_Linked(matrix);
     Invert(*matrixInvert);
     file.open(src_dir + "LinkDirGraph.csv", std::ios::app);
     tasks(file, *matrixInvert);
