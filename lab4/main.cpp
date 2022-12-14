@@ -58,8 +58,6 @@ size_t max(std::list<std::set<int>>& sets)
 
 void tasks(std::ofstream& file,IView2& matrix)
 {
-//    auto resultKerbosh = kerbosh(matrix);
-//    auto resultGreedy = greedyDominateSetAlgorithm(matrix);
     /// Вывод матрицы
     file << "Матрица смежности;\n";
     file << matrix.to_string();
@@ -110,16 +108,6 @@ void tasks(std::ofstream& file,IView2& matrix)
             file << std::endl;
         }
     }
-//    /// Вывод результата алгоритма Брона-Кербоша
-//    file << "Максимальные независимые множества ;\n";
-//    printList(file, resultKerbosh);
-//    file << "число независимости графа;";
-//    file << max(resultKerbosh)  << ";\n";
-//    file << "минимальное доминирующее множество ;\n";
-//    printSet(file,resultGreedy);
-//    file << std::endl;
-//    file << "число доминирования графа;";
-//    file << resultGreedy.size() << ";\n";
     file.close();
 }
 
