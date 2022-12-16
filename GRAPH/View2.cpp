@@ -81,6 +81,11 @@ View2::View2(const int &n, int k) {
     file.close();
 }
 
+View2::View2(const int &n) {
+    for(int i=0; i < n; i++)
+        this->push_back(column(n,0));
+}
+
 Degrees View2::degree()
 {
     Degrees degrees;

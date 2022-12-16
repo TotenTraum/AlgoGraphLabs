@@ -12,18 +12,19 @@ struct View2 : public IView2
 {
     View2(const int& n, int k);
 
+    View2(const int& n);
     Degrees degree();
 
     std::string to_string() const
     {
         std::stringstream stream;
-        stream << ";";
+        stream << ";;";
         for(int i=0;i<size();i++)
             stream << i <<  ";";
         stream << std::endl;
         for(int i = 0; i < size(); i++)
         {
-            stream << i << ";";
+            stream <<";" << i << ";";
             for(auto& item : (*this)[i])
                 stream << item << ";";
             stream << std::endl;

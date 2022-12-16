@@ -14,7 +14,7 @@ std::string src_dir = "lab6-";
 void gen_Vn_Ek(int& n, int& k, const std::function<unsigned int()>& func)
 {
     n = 20 + (func() % 11);
-    n = 5;
+    n = 4;
     int max = n * (n-1) /2;
     do
         k =  func() % (max + 1);
@@ -73,24 +73,7 @@ int main() {
 
     gen_Vn_Ek(n,k, [&generator](){return generator();});
 
-    View2_Linked matrix =  View2_Linked(8,16, generator);
-    for (int i = 0; i < matrix.size(); ++i) {
-        for (int j = 0; j < matrix.size(); ++j) {
-            matrix[i][j] = matrix[i][j] = 0;
-        }
-    }
-    matrix[1][0] = matrix[0][1] = 1;
-    matrix[4][0] = matrix[0][4] = 1;
-    matrix[2][0] = matrix[0][2] = 1;
-    matrix[2][3] = matrix[3][2] = 1;
-    matrix[6][3] = matrix[3][6] = 1;
-    matrix[1][3] = matrix[3][1] = 1;
-    matrix[2][5] = matrix[5][2] = 1;
-    matrix[4][5] = matrix[5][4] = 1;
-    matrix[6][5] = matrix[5][6] = 1;
-    matrix[6][7] = matrix[7][6] = 1;
-    matrix[7][4] = matrix[4][7] = 1;
-    matrix[7][1] = matrix[1][7] = 1;
+    View2_Linked matrix =  View2_Linked(n,k, generator);
     file.open(src_dir + "LinkDirGraph.csv");
     tasks(file, matrix);
     file << std::endl;
