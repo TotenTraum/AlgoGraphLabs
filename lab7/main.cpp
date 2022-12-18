@@ -9,7 +9,7 @@
 #include <set>
 #include <stack>
 
-std::string src_dir = "lab6-";
+std::string src_dir = "lab7-";
 
 void gen_Vn_Ek(int& n, int& k, const std::function<unsigned int()>& func)
 {
@@ -64,17 +64,35 @@ void tasks(std::ofstream& file,View2_Linked& matrix)
     /// Вывод матрицы
     file << "Матрица смежности;\n";
     file << matrix.to_string();
-    /// Вывод результата алгоритма Брона-Кербоша
-    file << "Максимальное независимое множество ;\n";
-    printSet(file, getMaxSet(resultKerbosh));
-    file << "\nчисло независимости графа;";
-    file << Max(resultKerbosh)  << ";\n";
-    file << "минимальное доминирующее множество ;\n";
-    printSet(file,resultGreedy);
-    file << std::endl;
-    file << "число доминирования графа;";
-    file << resultGreedy.size() << ";\n";
-    file.close();
+    {
+        file << "\nРаскраска графа (динамическое программирование);\n";
+        auto arr = DynamicGraphColorising(matrix);
+        file << ";Вершина;Краска;\n";
+        for (auto item: arr)
+            file <<";" << item.first << ";" << item.second << ";\n";
+    }
+    {
+        file << "\nРаскраска графа (задача о минимальном покрытии);\n";
+        auto arr = LeastCoverGraphColorising(matrix);
+        file << ";Вершина;Краска;\n";
+        for (auto item: arr)
+            file << ";" <<item.first << ";" << item.second << ";\n";
+    }
+    {
+        file << "\nРаскраска графа (прямой неявный перебор);\n";
+        auto arr = BruteForceGraphColorising(matrix);
+        file << ";Вершина;Краска;\n";
+        for (auto item: arr)
+            file <<";" << item.first << ";" << item.second << ";\n";
+    }
+    {
+        file << "\nРаскраска графа (алгоритм Уэлча-Пауэлла);\n";
+        auto arr = WelchPowelGraphColorising(matrix);
+        file << ";Вершина;Краска;\n";
+        for (auto item: arr)
+            file << ";" << item.first << ";" << item.second << ";\n";
+    }
+
 }
 
 int main() {
@@ -87,14 +105,6 @@ int main() {
     View2_Linked matrix =  View2_Linked(n,k, generator);
     file.open(src_dir + "LinkDirGraph.csv");
     tasks(file, matrix);
-    file << std::endl;
-    file << std::endl;
-    file.close();
-
-    auto matrixInvert = new View2_Linked(matrix);
-    Invert(*matrixInvert);
-    file.open(src_dir + "LinkDirGraph.csv", std::ios::app);
-    tasks(file, *matrixInvert);
     file.close();
 
     return 0;

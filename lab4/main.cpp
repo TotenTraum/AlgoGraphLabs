@@ -63,6 +63,7 @@ void tasks(std::ofstream& file,IView2& matrix)
     file << matrix.to_string();
     {
         file << "Алгоритм Беллмана Форда;\n";
+        file << "Длина;Путь;\n";
         auto [dists, paths] = BellmanFord(matrix, 0);
         for (int i = 1; i < matrix.size(); ++i) {
             auto path = RestoreBellmanFord(paths, 0, i);
@@ -75,6 +76,7 @@ void tasks(std::ofstream& file,IView2& matrix)
     }
     {
         file << "Алгоритм Дейкстры для матрицы смежности;\n";
+        file << "Длина;Путь;\n";
         auto [dists, paths] = Dikstra(matrix, 0);
         for (int i = 1; i < matrix.size(); ++i) {
             auto path = RestoreBellmanFord(paths, 0, i);
@@ -86,6 +88,7 @@ void tasks(std::ofstream& file,IView2& matrix)
     }
     {
         file << "Алгоритм Флойда Уоршелла;\n";
+        file << "Длина;Путь;\n";
         auto [dists, paths] = Floyd(matrix);
         for (int i = 1; i < matrix.size(); ++i) {
             auto path = RestoreFloyd(paths, 0, i);
@@ -99,6 +102,7 @@ void tasks(std::ofstream& file,IView2& matrix)
     printMtxToList(file, matrix);
     {
         file << "Алгоритм Дейкстры для списка смежности;\n";
+        file << "Длина;Путь;\n";
         auto [dists, paths] = Dikstra(matrix, 0);
         for (int i = 1; i < matrix.size(); ++i) {
             auto path = RestoreBellmanFord(paths, 0, i);

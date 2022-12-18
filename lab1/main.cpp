@@ -10,7 +10,7 @@ std::string src_dir = "lab1-";
 void gen_Vn_Ek(int& n, int& k,const std::function<unsigned int()>& func)
 {
     n = 20 + (func() % 11);
-    n = 10;
+    n = 5;
     int max = n*(n-1) / 2;
     k = (n - 1) + func() % (max - (n - 1) + 1);
 }
